@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>CleverGate - Inscription Admin</title>
+    <link rel="shortcut icon" href="icon.jpeg" type="jpeg"> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box" style="width: 400px;">
+            <h1>🛡️ Créer un Admin</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" id="nom" placeholder="Nom" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="prenom" placeholder="Prénom" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Nom d'utilisateur (Login)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Mot de passe" required>
+                </div>
+                
+                <!-- Zone RFID -->
+                <div class="form-group" style="background: #f0f0f0; padding: 15px; border-radius: 5px;">
+                    <label><strong>UID Carte RFID :</strong></label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <input type="text" id="rfid_uid" placeholder="Cliquez sur Scanner..." required style="flex:1;">
+                        <button type="button" id="scanBtn" style="width: auto; white-space: nowrap;">📡 Scanner</button>
+                    </div>
+                    <small id="scanStatus" style="color: #666;"></small>
+                </div>
+
+                <button type="submit">Créer le compte</button>
+                <div id="message" class="error-message"></div>
+                <br>
+                <a href="index.html" style="display:block; text-align:center; color:#667eea;">← Retour à la connexion</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const scanBtn = document.getElementById('scanBtn');
+        const rfidInput = document.getElementById('rfid_uid');
+        const scanStatus = document.getElementById('scanStatus');
+        let isScanning = false;
+
+        // Fonction pour scanner
+        scanBtn.addEventListener('click', () => {
+            if(isScanning) return;
+            isScanning = true;
+            scanBtn.textContent = "En attente...";
+            scanBtn.style.background = "#ffc107";
+            scanStatus.textContent = "Passez la carte près du lecteur...";
+
+            // On interroge l'API en boucle jusqu'à obtenir un UID
+            fetch('api.php?action=get_last_scan')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        rfidInput.value = data.uid;
+                        scanStatus.textContent = "✅ Carte détectée !";
+                        scanStatus.style.color = "green";
+                    } else {
+                        scanStatus.textContent = "⏱️ Aucune carte détectée (timeout).";
+                        scanStatus.style.color = "red";
+                    }
+                })
+                .catch(err => {
+                    scanStatus.textContent = "Erreur de connexion.";
+                })
+                .finally(() => {
+                    isScanning = false;
+                    scanBtn.textContent = "📡 Scanner";
+                    scanBtn.style.background = "#667eea";
+                });
+        });
+
+        // Soumission du formulaire
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                rfid_uid: document.getElementById('rfid_uid').value
+            };
+
+            fetch('api.php?action=add_admin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    alert('Admin créé avec succès !');
+                    window.location.href = 'index.html';
+                } else {
+                    document.getElementById('message').textContent = 'Erreur: ' + res.message;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

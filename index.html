@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleverGate - Connexion</title>
+    <link rel="shortcut icon" href="icon.jpeg" type="jpeg"> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Remplace le contenu de la div class="login-box" -->
+    <div class="login-box">
+        <h1>🔐 CleverGate</h1>
+        <h2>Système de contrôle d'accès</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Se connecter</button>
+        </form>
+        
+        <div id="errorMessage" class="error-message"></div>
+        
+            <!-- LIEN AJOUTÉ ICI -->
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="register.html" style="color: #667eea; text-decoration: none; font-weight: bold;">Créer un compte Administrateur</a>
+            </div>
+        </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // ON UTILISE L'API MAINTENANT
+            fetch('api.php?action=login_admin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    document.getElementById('errorMessage').textContent = data.message;
+                }
+            })
+            .catch(err => {
+                document.getElementById('errorMessage').textContent = 'Erreur serveur';
+            });
+        });
+    </script>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Pour le test, on accepte admin/admin
+            if(username === 'admin' && password === 'admin') {
+                window.location.href = 'dashboard.html';
+            } else {
+                document.getElementById('errorMessage').textContent = 'Identifiants incorrects';
+            }
+        });
+    </script>
+</body>
+</html>

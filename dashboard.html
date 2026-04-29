@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleverGate - Administration</title>
+   <link rel="shortcut icon" href="icon.jpeg" type="jpeg"> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🏢 CleverGate Admin</h1>
+            <div class="nav-links">
+                <span>👤 Admin</span>
+                <a href="index.html" class="logout-btn">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Section Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total utilisateurs</h3>
+                <div class="stat-number" id="totalUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Passages aujourd'hui</h3>
+                <div class="stat-number" id="todayLogs">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Dernier passage</h3>
+                <div class="stat-number" id="lastLog">-</div>
+            </div>
+        </div>
+        
+        <!-- Section Ajout Utilisateur -->
+        <div class="card">
+            <h2>➕ Ajouter un utilisateur</h2>
+            <form id="addUserForm" class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" id="nom" placeholder="Nom" required>
+                <input type="text" id="prenom" placeholder="Prénom" required>
+                <input type="text" id="email" placeholder="Email" required>
+                
+                <!-- Zone RFID avec Scanner -->
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="rfid_uid" placeholder="UID de la carte RFID" required style="flex:1;">
+                        <button type="button" id="scanUserBtn" style="width: auto; white-space: nowrap;">📡 Scanner</button>
+                    </div>
+                    <small id="scanUserStatus" style="color: #666; height: 15px;"></small>
+                </div>
+
+                <button type="submit" style="grid-column: span 2;">Ajouter l'utilisateur</button>
+            </form>
+            <div id="addMessage" class="success-message"></div>
+        </div>
+        
+        <!-- Section Liste des utilisateurs -->
+        <div class="card">
+            <h2>📋 Utilisateurs enregistrés</h2>
+            <table class="table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>UID RFID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersList">
+                    <!-- Rempli par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div class="card">
+            <h2>👑 Administrateurs</h2>
+            <table class="table" id="adminsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Login</th>
+                        <th>UID RFID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminsList">
+                    <!-- Rempli par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Section Historique des passages -->
+        <div class="card">
+            <h2>📊 Historique des passages</h2>
+            <table class="table" id="logsTable">
+                <thead>
+                    <tr>
+                        <th>Date/Heure</th>
+                        <th>Utilisateur</th>
+                        <th>Action</th>
+                        <th>UID</th>
+                    </tr>
+                </thead>
+                <tbody id="logsList">
+                    <!-- Rempli par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
